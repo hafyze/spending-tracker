@@ -1,4 +1,3 @@
-// src/routes/api/expense/+server.ts
 import { json } from "@sveltejs/kit";
 import { db } from "$lib/mongo";
 import type { RequestHandler } from "./$types";

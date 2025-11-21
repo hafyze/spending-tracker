@@ -1,4 +1,3 @@
-<!-- src/routes/new-budget/+page.svelte -->
 <script lang="ts">
   import { goto } from "$app/navigation";
   let category = "";
@@ -10,7 +9,6 @@
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ category, monthly_limit }),
     });
-    // use goto for SPA navigation
     goto("/");
   }
 </script>
