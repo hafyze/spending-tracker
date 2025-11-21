@@ -1,4 +1,3 @@
-<!-- src/routes/new-expense/+page.svelte -->
 <script lang="ts">
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
@@ -12,6 +11,7 @@
   });
 
   async function save() {
+    if (!category || amount <= 0) return alert("Please enter valid values");
     await fetch("/api/expense", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -21,21 +21,32 @@
   }
 </script>
 
-<h1 class="text-xl font-bold mb-4">Add Expense</h1>
+<div class="p-4 max-w-md mx-auto">
+  <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">Add Expense</h1>
 
-<select bind:value={category} class="border p-2 block">
-  <option value="">Select category</option>
-  {#each categories as c}
-    <option value={c.category}>{c.category}</option>
-  {/each}
-</select>
+  <div class="flex flex-col gap-4">
+    <select
+      bind:value={category}
+      class="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 w-full"
+    >
+      <option value="">Select category</option>
+      {#each categories as c}
+        <option value={c.category}>{c.category}</option>
+      {/each}
+    </select>
 
-<input
-  type="number"
-  bind:value={amount}
-  class="border p-2 block mt-2"
-  placeholder="Amount used"
-/>
-<button class="bg-green-500 text-white px-4 py-2 mt-3 rounded" on:click={save}>
-  Save
-</button>
+    <input
+      type="number"
+      bind:value={amount}
+      placeholder="Amount used (RM)"
+      class="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 w-full"
+    />
+
+    <button
+      class="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg transition-all"
+      on:click={save}
+    >
+      Save Expense
+    </button>
+  </div>
+</div>
