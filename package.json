@@ -23,5 +23,10 @@
 		"tailwindcss": "^4.1.17",
 		"typescript": "^5.9.3",
 		"vite": "^7.2.2"
+	},
+	"dependencies": {
+		"@supabase/supabase-js": "^2.84.0",
+		"@vercel/functions": "^3.3.3",
+		"mongodb": "^7.0.0"
 	}
 }
