@@ -15,7 +15,7 @@
       .reduce((s: any, e: any) => s + Number(e.amount ?? 0), 0);
   }
 
-  // --- Budget edit ---
+  //  Budget edit
   function editBudget(b: any) {
     editingBudget = { ...b };
   }
@@ -30,7 +30,7 @@
     goto("/");
   }
 
-  // --- Expense edit ---
+  //  Expense edit
   function editExpense(e: any) {
     editingExpense = { ...e };
   }
@@ -45,7 +45,26 @@
     goto("/");
   }
 
-  // --- Reset spending ---
+  //  Delete an expense
+  async function deleteExpense(e: any) {
+    if (
+      !confirm(
+        `Are you sure you want to delete this expense of RM ${e.amount}?`
+      )
+    )
+      return;
+
+    await fetch("/api/expense", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ _id: e._id }), // assuming _id is stored in MongoDB
+    });
+
+    // refresh page
+    goto("/");
+  }
+
+  //  Reset spending
   async function resetCategory(cat: string) {
     if (!confirm(`Are you sure you want to reset all spending for ${cat}?`))
       return;
@@ -181,6 +200,7 @@
             </button>
           </div>
         </div>
+
         <p class="text-gray-600">Limit: RM {b.monthly_limit}</p>
         <p class="text-gray-600">Used: RM {totalSpent(b.category)}</p>
         <p
@@ -192,6 +212,32 @@
         >
           Remaining: RM {b.monthly_limit - totalSpent(b.category)}
         </p>
+
+        <!-- List of expenses -->
+        <div class="mt-2">
+          <h3 class="text-gray-700 font-semibold mb-1">Expenses:</h3>
+          {#each expenses.filter((e: any) => e.category === b.category) as e}
+            <div
+              class="flex justify-between items-center bg-gray-100 p-2 rounded mb-1"
+            >
+              <span>RM {e.amount}</span>
+              <div class="flex gap-2">
+                <button
+                  class="text-blue-500 text-sm"
+                  on:click={() => editExpense(e)}
+                >
+                  Edit
+                </button>
+                <button
+                  class="text-red-500 text-sm"
+                  on:click={() => deleteExpense(e)}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          {/each}
+        </div>
       </div>
     {/each}
   </div>

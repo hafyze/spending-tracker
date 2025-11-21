@@ -1,6 +1,7 @@
 import { json } from "@sveltejs/kit";
 import { db } from "$lib/mongo";
 import type { RequestHandler } from "./$types";
+import { ObjectId } from "mongodb";
 
 export const POST: RequestHandler = async ({ request }) => {
   const body = await request.json();
@@ -22,3 +23,10 @@ export const GET: RequestHandler = async () => {
   const list = await expenses.find({}).toArray();
   return json(list);
 };
+
+export async function DELETE({ request }) {
+  const { _id } = await request.json();
+  const expenses = db.collection("expenses");
+  await expenses.deleteOne({ _id: new ObjectId(_id) });
+  return json({ success: true });
+}
