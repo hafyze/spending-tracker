@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { goto } from "$app/navigation";
+  import { invalidateAll } from "$app/navigation";
 
   let category = "";
   let monthly_limit = 0;
@@ -12,7 +12,7 @@
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ category, monthly_limit }),
     });
-    goto("/");
+    await invalidateAll();
   }
 </script>
 

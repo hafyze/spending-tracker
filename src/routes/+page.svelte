@@ -1,6 +1,8 @@
 <script lang="ts">
   import type { PageData } from "./$types";
-  import { goto } from "$app/navigation";
+  import { invalidateAll } from "$app/navigation";
+  import { ChartPie, BanknoteArrowUp } from "lucide-svelte";
+  import { categoryIcons } from "$lib/assets/categoryIcons";
 
   export let data: PageData;
 
@@ -15,6 +17,11 @@
       .reduce((s: any, e: any) => s + Number(e.amount ?? 0), 0);
   }
 
+  function getIcon(category: string) {
+    const key = category.toLowerCase();
+    return categoryIcons[key] || categoryIcons.default;
+  }
+
   //  Budget edit
   function editBudget(b: any) {
     editingBudget = { ...b };
@@ -27,7 +34,7 @@
       body: JSON.stringify(editingBudget),
     });
     editingBudget = null;
-    goto("/");
+    await invalidateAll();
   }
 
   //  Expense edit
@@ -42,7 +49,7 @@
       body: JSON.stringify(editingExpense),
     });
     editingExpense = null;
-    goto("/");
+    await invalidateAll();
   }
 
   //  Delete an expense
@@ -61,7 +68,7 @@
     });
 
     // refresh page
-    goto("/");
+    await invalidateAll();
   }
 
   //  Reset spending
@@ -73,7 +80,7 @@
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ category: cat }),
     });
-    goto("/");
+    await invalidateAll();
   }
 </script>
 
@@ -85,15 +92,20 @@
   <div class="flex flex-col gap-3 mb-6">
     <a
       href="/new-budget"
-      class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg text-center transition-all"
+      class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg text-center transition-all
+           flex items-center justify-center gap-2"
     >
-      + Add Budget Category
+      <span>Add Budget Category</span>
+      <ChartPie size={20} />
     </a>
+
     <a
       href="/new-expense"
-      class="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg text-center transition-all"
+      class="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg text-center transition-all
+           flex items-center justify-center gap-2"
     >
-      + Add Spending
+      <span>Add Spending</span>
+      <BanknoteArrowUp size={20} />
     </a>
   </div>
 
@@ -180,11 +192,15 @@
 
   <div class="flex flex-col gap-4">
     {#each budgets as b}
+      {@const Icon = getIcon(b.category)}
       <div
         class="border p-4 rounded-lg shadow hover:shadow-md transition-shadow"
       >
         <div class="flex justify-between items-center mb-2">
-          <p class="font-semibold text-gray-800 text-lg">{b.category}</p>
+          <div class="flex items-center gap-2">
+            <Icon size={20} class="text-gray-700" />
+            <p class="font-semibold text-gray-800 text-lg">{b.category}</p>
+          </div>
           <div class="flex gap-2">
             <button
               class="text-blue-500 hover:text-blue-600 text-sm font-medium"
@@ -202,9 +218,22 @@
         </div>
 
         <p class="text-gray-600">Limit: RM {b.monthly_limit}</p>
-        <p class="text-gray-600">Used: RM {totalSpent(b.category)}</p>
+
+        <!-- Progress bar -->
+        <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+          <div
+            class={`h-2 rounded-full transition-all ${
+                  totalSpent(b.category) > b.monthly_limit ? 'bg-red-500' : 'bg-green-500'
+                }`}
+            style="width: {Math.min(
+              (totalSpent(b.category) / b.monthly_limit) * 100,
+              100
+            )}%"
+          ></div>
+        </div>
+
         <p
-          class={`font-semibold ${
+          class={`font-semibold mt-2 ${
             totalSpent(b.category) > b.monthly_limit
               ? "text-red-500"
               : "text-green-600"

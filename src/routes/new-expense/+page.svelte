@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { goto } from "$app/navigation";
+  import { invalidateAll } from "$app/navigation";
 
   let category = "";
   let amount = 0;
@@ -17,7 +17,7 @@
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ category, amount }),
     });
-    goto("/");
+    await invalidateAll();
   }
 </script>
 
