@@ -30,3 +30,20 @@ export async function DELETE({ request }) {
   await expenses.deleteOne({ _id: new ObjectId(_id) });
   return json({ success: true });
 }
+
+export async function PUT({ request }) {
+  const body = await request.json();
+  const { _id, category, amount } = body;
+
+  if (!_id || !category || Number.isNaN(Number(amount))) {
+    return json({ error: "_id, category, and amount required" }, { status: 400 });
+  }
+
+  const expenses = db.collection("expenses");
+  await expenses.updateOne(
+    { _id: new ObjectId(_id) },
+    { $set: { category: String(category), amount: Number(amount) } }
+  );
+
+  return json({ success: true });
+}
