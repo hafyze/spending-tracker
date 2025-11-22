@@ -72,13 +72,13 @@
   }
 
   //  delete budget category
-  async function deleteCategory(cat: string) {
-    if (!confirm(`Are you sure you want to Delete ${cat}?`))
+  async function deleteCategory(id: string, category: string) {
+    if (!confirm(`Are you sure you want to Delete ${category}?`))
       return;
     await fetch("/api/budget", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ category: cat }),
+      body: JSON.stringify({ _id: id }),
     });
     await invalidateAll();
   }
@@ -210,7 +210,7 @@
             </button>
             <button
               class="text-red-500 hover:text-red-600 text-sm font-medium"
-              on:click={() => deleteCategory(b._id)}
+              on:click={() => deleteCategory(b._id, b.category)}
             >
               <Trash2 />
             </button>
