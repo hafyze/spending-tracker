@@ -37,3 +37,10 @@ export const PUT: RequestHandler = async ({ request }) => {
 
   return json({ success: true });
 };
+
+export async function DELETE({ request }) {
+  const { _id } = await request.json();
+  const expenses = db.collection("budgets");
+  await expenses.deleteOne({ _id: new ObjectId(_id) });
+  return json({ success: true });
+}

@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { PageData } from "./$types";
   import { invalidateAll } from "$app/navigation";
-  import { ChartPie, BanknoteArrowUp } from "lucide-svelte";
+  import { ChartPie, BanknoteArrowUp, SquarePen } from "lucide-svelte";
   import { categoryIcons } from "$lib/assets/categoryIcons";
 
   export let data: PageData;
@@ -71,12 +71,12 @@
     await invalidateAll();
   }
 
-  //  Reset spending
-  async function resetCategory(cat: string) {
-    if (!confirm(`Are you sure you want to reset all spending for ${cat}?`))
+  //  delete budget category
+  async function deleteCategory(cat: string) {
+    if (!confirm(`Are you sure you want to Delete ${cat}?`))
       return;
-    await fetch("/api/expense/reset", {
-      method: "POST",
+    await fetch("/api/budget", {
+      method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ category: cat }),
     });
@@ -206,11 +206,11 @@
               class="text-blue-500 hover:text-blue-600 text-sm font-medium"
               on:click={() => editBudget(b)}
             >
-              Edit
+              <SquarePen />
             </button>
             <button
               class="text-red-500 hover:text-red-600 text-sm font-medium"
-              on:click={() => resetCategory(b.category)}
+              on:click={() => deleteCategory(b.category)}
             >
               Reset Spending
             </button>
@@ -255,7 +255,7 @@
                   class="text-blue-500 text-sm"
                   on:click={() => editExpense(e)}
                 >
-                  Edit
+                  <SquarePen />
                 </button>
                 <button
                   class="text-red-500 text-sm"
