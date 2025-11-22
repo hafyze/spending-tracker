@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { PageData } from "./$types";
   import { invalidateAll } from "$app/navigation";
-  import { ChartPie, BanknoteArrowUp, SquarePen } from "lucide-svelte";
+  import { ChartPie, BanknoteArrowUp, SquarePen, Trash2 } from "lucide-svelte";
   import { categoryIcons } from "$lib/assets/categoryIcons";
 
   export let data: PageData;
@@ -212,7 +212,7 @@
               class="text-red-500 hover:text-red-600 text-sm font-medium"
               on:click={() => deleteCategory(b.category)}
             >
-              Reset Spending
+              <Trash2 />
             </button>
           </div>
         </div>
@@ -261,7 +261,7 @@
                   class="text-red-500 text-sm"
                   on:click={() => deleteExpense(e)}
                 >
-                  Delete
+                  <Trash2 />
                 </button>
               </div>
             </div>
