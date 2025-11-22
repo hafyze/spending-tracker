@@ -1,6 +1,7 @@
 import { json } from "@sveltejs/kit";
 import { db } from "$lib/mongo";
 import type { RequestHandler } from "./$types";
+import { ObjectId } from "mongodb";
 
 export const POST: RequestHandler = async ({ request }) => {
   const body = await request.json();
@@ -30,7 +31,7 @@ export const PUT: RequestHandler = async ({ request }) => {
 
   const budgets = db.collection("budgets");
   await budgets.updateOne(
-    { _id: new Object(_id) },
+    { _id: new ObjectId(_id) },
     { $set: { category, monthly_limit } }
   );
 
