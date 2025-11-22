@@ -210,7 +210,7 @@
             </button>
             <button
               class="text-red-500 hover:text-red-600 text-sm font-medium"
-              on:click={() => deleteCategory(b.category)}
+              on:click={() => deleteCategory(b._id)}
             >
               <Trash2 />
             </button>
