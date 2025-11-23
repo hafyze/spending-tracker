@@ -3,7 +3,7 @@
   import { goto } from "$app/navigation";
 
   let category = "";
-  let amount = 0;
+  let amount: number;
   let categories: { category: string; monthly_limit?: number }[] = [];
 
   onMount(async () => {

@@ -2,7 +2,7 @@
   import { goto } from "$app/navigation";
 
   let category = "";
-  let monthly_limit = 0;
+  let monthly_limit: number;
 
   async function save() {
     if (!category || monthly_limit <= 0)

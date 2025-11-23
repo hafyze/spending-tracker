@@ -157,6 +157,7 @@
         <input
           type="text"
           bind:value={editingExpense.category}
+          disabled
           placeholder="Category"
           class="border p-2 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-green-400"
         />
