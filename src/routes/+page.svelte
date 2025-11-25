@@ -149,12 +149,14 @@
         />
         <div class="flex justify-between gap-2">
           <button
+            disabled={loading}
             class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition-all flex-1"
             on:click={saveEditBudget}
           >
             Save
           </button>
           <button
+            disabled={loading}
             class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-lg transition-all flex-1"
             on:click={() => (editingBudget = null)}
           >
@@ -187,6 +189,7 @@
         />
         <div class="flex justify-between gap-2">
           <button
+            disabled={loading}
             class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg transition-all flex-1"
             on:click={saveEditExpense}
           >
@@ -222,12 +225,14 @@
           </div>
           <div class="flex gap-2">
             <button
+              disabled={loading}
               class="text-blue-500 hover:text-blue-600 text-sm font-medium"
               on:click={() => editBudget(b)}
             >
               <SquarePen />
             </button>
             <button
+              disabled={loading}
               class="text-red-500 hover:text-red-600 text-sm font-medium"
               on:click={() => deleteCategory(b._id, b.category)}
             >
@@ -288,6 +293,7 @@
             <span>RM {e.amount}</span>
             <div class="flex gap-2">
               <button
+                disabled={loading}
                 class="text-blue-500 text-sm"
                 on:click={() => editExpense(e)}
               >
