@@ -3,16 +3,19 @@
 
   let category = "";
   let monthly_limit: number;
+  let loading = false;
 
   async function save() {
     if (!category || monthly_limit <= 0)
       return alert("Please enter valid values");
+    loading=true
     await fetch("/api/budget", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ category, monthly_limit }),
     });
     goto('/');
+    loading=false
   }
 </script>
 
@@ -34,6 +37,7 @@
       class="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 w-full"
     />
     <button
+      disabled={loading}
       class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg transition-all"
       on:click={save}
     >

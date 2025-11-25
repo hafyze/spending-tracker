@@ -5,6 +5,7 @@
   let category = "";
   let amount: number;
   let categories: { category: string; monthly_limit?: number }[] = [];
+  let loading = false;
 
   onMount(async () => {
     categories = await fetch("/api/budget").then((r) => r.json());
@@ -12,12 +13,14 @@
 
   async function save() {
     if (!category || amount <= 0) return alert("Please enter valid values");
+    loading = true;
     await fetch("/api/expense", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ category, amount }),
     });
     goto('/');
+    loading = false;
   }
 </script>
 
@@ -43,6 +46,7 @@
     />
 
     <button
+      disabled={loading}
       class="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg transition-all"
       on:click={save}
     >
