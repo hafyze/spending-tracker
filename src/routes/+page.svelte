@@ -3,6 +3,7 @@
   import { invalidateAll } from "$app/navigation";
   import { ChartPie, BanknoteArrowUp, SquarePen, Trash2 } from "lucide-svelte";
   import { categoryIcons } from "$lib/assets/categoryIcons";
+  import { Eraser } from "@lucide/svelte";
 
   export let data: PageData;
 
@@ -10,6 +11,7 @@
 
   let editingBudget: (typeof budgets)[0] | null = null;
   let editingExpense: (typeof expenses)[0] | null = null;
+  let loading = false;
 
   function totalSpent(cat: string) {
     return expenses
@@ -28,6 +30,7 @@
   }
 
   async function saveEditBudget() {
+    loading = true;
     await fetch("/api/budget", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -35,6 +38,7 @@
     });
     editingBudget = null;
     await invalidateAll();
+    loading = false;
   }
 
   //  Expense edit
@@ -43,6 +47,7 @@
   }
 
   async function saveEditExpense() {
+    loading = true;
     await fetch("/api/expense", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -50,6 +55,7 @@
     });
     editingExpense = null;
     await invalidateAll();
+    loading = false;
   }
 
   //  Delete an expense
@@ -60,27 +66,50 @@
       )
     )
       return;
-
+    loading = true;
     await fetch("/api/expense", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ _id: e._id }), // assuming _id is stored in MongoDB
+      body: JSON.stringify({ _id: e._id }),
     });
 
     // refresh page
     await invalidateAll();
+    loading = false;
   }
 
   //  delete budget category
   async function deleteCategory(id: string, category: string) {
-    if (!confirm(`Are you sure you want to Delete ${category}?`))
-      return;
+    if (!confirm(`Are you sure you want to Delete ${category}?`)) return;
+    loading = true;
     await fetch("/api/budget", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ _id: id }),
     });
     await invalidateAll();
+    loading = false;
+  }
+
+  async function resetExpensesCategory(category: string) {
+    if (
+      !confirm(
+        "Are you sure you want to delete ALL expenses? This cannot be undone."
+      )
+    )
+      return;
+
+    loading = true;
+    try {
+      await fetch("/api/expense/reset", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ category }),
+      });
+      await invalidateAll();
+    } finally {
+      loading = false;
+    }
   }
 </script>
 
@@ -93,7 +122,7 @@
     <a
       href="/new-budget"
       class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg text-center transition-all
-           flex items-center justify-center gap-2"
+            flex items-center justify-center gap-2"
     >
       <span>Add Budget Category</span>
       <ChartPie size={20} />
@@ -102,7 +131,7 @@
     <a
       href="/new-expense"
       class="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg text-center transition-all
-           flex items-center justify-center gap-2"
+            flex items-center justify-center gap-2"
     >
       <span>Add Spending</span>
       <BanknoteArrowUp size={20} />
@@ -110,7 +139,6 @@
   </div>
 
   <h2 class="text-2xl font-semibold mt-4 mb-4 text-gray-700">Summary</h2>
-
   <!-- Edit Budget Modal -->
   {#if editingBudget}
     <div
@@ -224,10 +252,13 @@
         <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
           <div
             class={`h-2 rounded-full transition-all ${
-              totalSpent(b.category) > b.monthly_limit? "bg-red-500" : "bg-green-500" }`
-              }
+              totalSpent(b.category) > b.monthly_limit
+                ? "bg-red-500"
+                : "bg-green-500"
+            }`}
             style="width: {Math.max(
-               ((b.monthly_limit - totalSpent(b.category)) / b.monthly_limit) * 100,
+              ((b.monthly_limit - totalSpent(b.category)) / b.monthly_limit) *
+                100,
               0
             )}%"
           ></div>
@@ -244,32 +275,43 @@
         </p>
 
         <!-- List of expenses -->
-        <div class="mt-2">
+        <div class="mt-2 flex items-center justify-between">
           <h3 class="text-gray-700 font-semibold mb-1">
             Expenses: (Total: RM {totalSpent(b.category).toFixed(2)})
           </h3>
-          {#each expenses.filter((e: any) => e.category === b.category) as e}
-            <div
-              class="flex justify-between items-center bg-gray-100 p-2 rounded mb-1"
-            >
-              <span>RM {e.amount}</span>
-              <div class="flex gap-2">
-                <button
-                  class="text-blue-500 text-sm"
-                  on:click={() => editExpense(e)}
-                >
-                  <SquarePen />
-                </button>
-                <button
-                  class="text-red-500 text-sm"
-                  on:click={() => deleteExpense(e)}
-                >
-                  <Trash2 />
-                </button>
-              </div>
-            </div>
-          {/each}
+
+          <!-- Reset button with icon -->
+          <button
+            class="text-red-500 hover:text-red-600 text-sm font-medium flex items-center gap-1"
+            on:click={() => resetExpensesCategory(b.category)}
+            title="Reset all expenses for this category"
+          >
+            <Eraser size={16} />
+          </button>
         </div>
+
+        <!-- List of expenses -->
+        {#each expenses.filter((e: any) => e.category === b.category) as e}
+          <div
+            class="flex justify-between items-center bg-gray-100 p-2 rounded mb-1"
+          >
+            <span>RM {e.amount}</span>
+            <div class="flex gap-2">
+              <button
+                class="text-blue-500 text-sm"
+                on:click={() => editExpense(e)}
+              >
+                <SquarePen />
+              </button>
+              <button
+                class="text-red-500 text-sm"
+                on:click={() => deleteExpense(e)}
+              >
+                <Trash2 />
+              </button>
+            </div>
+          </div>
+        {/each}
       </div>
     {/each}
   </div>

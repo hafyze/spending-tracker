@@ -1,5 +1,5 @@
 import { json } from "@sveltejs/kit";
-import { db } from "$lib/mongo";
+import { db } from "$lib/db/mongo";
 import type { RequestHandler } from "./$types";
 import { ObjectId } from "mongodb";
 
