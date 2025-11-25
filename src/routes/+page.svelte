@@ -37,7 +37,7 @@
       body: JSON.stringify(editingBudget),
     });
     editingBudget = null;
-    await invalidateAll();
+    location.reload();
     loading = false;
   }
 
@@ -54,7 +54,7 @@
       body: JSON.stringify(editingExpense),
     });
     editingExpense = null;
-    await invalidateAll();
+    location.reload()
     loading = false;
   }
 
@@ -69,7 +69,7 @@
     });
 
     // refresh page
-    await invalidateAll();
+    location.reload()
     loading = false;
   }
 
@@ -82,7 +82,7 @@
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ _id: id }),
     });
-    await invalidateAll();
+    location.reload()
     loading = false;
   }
 
@@ -96,7 +96,7 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ category }),
       });
-      await invalidateAll();
+      location.reload();
     } finally {
       loading = false;
     }
