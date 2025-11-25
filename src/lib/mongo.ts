@@ -1,20 +1,30 @@
+import dotenv from "dotenv";
+dotenv.config();
 import { MongoClient } from "mongodb";
 import type { MongoClientOptions } from "mongodb";
 import { attachDatabasePool } from "@vercel/functions";
 
-const uri = process.env.MONGODB_URI;
-const dbName = process.env.MONGODB_DB;
+// Determine environment
+const ENV = process.env.NODE_ENV ?? "production";
 
-if (!uri) throw new Error("Missing MONGODB_URI");
-if (!dbName) throw new Error("Missing MONGODB_DB");
+// Pick URI & DB based on environment
+const uri = ENV === "development"
+  ? process.env.MONGODB_URI_DEV
+  : process.env.MONGODB_URI;
+const dbName = ENV === "development"
+  ? process.env.MONGODB_DB_DEV
+  : process.env.MONGODB_DB;
+
+  if (!uri) throw new Error(`Missing MongoDB URI for environment: ${ENV}`);
+if (!dbName) throw new Error(`Missing MongoDB DB name for environment: ${ENV}`);
 
 const options: MongoClientOptions = {
   maxPoolSize: 10,
 };
 
-// Avoid creating multiple clients in dev/hot-reload
+// Avoid multiple clients in dev/hot-reload
 declare global {
-  var __mongo_client__: any;
+  var __mongo_client__: MongoClient | undefined;
 }
 
 let client: MongoClient;

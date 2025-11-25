@@ -27,7 +27,9 @@
 	"dependencies": {
 		"@lucide/svelte": "^0.554.0",
 		"@supabase/supabase-js": "^2.84.0",
+		"@thisux/sveltednd": "^0.0.20",
 		"@vercel/functions": "^3.3.3",
+		"dotenv": "^17.2.3",
 		"lucide-svelte": "^0.554.0",
 		"mongodb": "^7.0.0"
 	}
