@@ -240,13 +240,13 @@
               : "text-green-600"
           }`}
         >
-          Remaining: RM {b.monthly_limit - totalSpent(b.category)}
+          Remaining: RM {(b.monthly_limit - totalSpent(b.category)).toFixed(2)}
         </p>
 
         <!-- List of expenses -->
         <div class="mt-2">
           <h3 class="text-gray-700 font-semibold mb-1">
-            Expenses: (Total: RM {totalSpent(b.category)})
+            Expenses: (Total: RM {totalSpent(b.category).toFixed(2)})
           </h3>
           {#each expenses.filter((e: any) => e.category === b.category) as e}
             <div
