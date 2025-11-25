@@ -226,9 +226,9 @@
             class={`h-2 rounded-full transition-all ${
                   totalSpent(b.category) > b.monthly_limit ? 'bg-red-500' : 'bg-green-500'
                 }`}
-            style="width: {Math.min(
-              (totalSpent(b.category) / b.monthly_limit) * 100,
-              100
+            style="width: {Math.max(
+              ((b.monhtly_limit - totalSpent(b.category)) / b.monthly_limit) * 100,
+              0
             )}%"
           ></div>
         </div>
@@ -245,7 +245,9 @@
 
         <!-- List of expenses -->
         <div class="mt-2">
-          <h3 class="text-gray-700 font-semibold mb-1">Expenses:</h3>
+          <h3 class="text-gray-700 font-semibold mb-1">
+            Expenses: (Total: RM {totalSpent(b.category)})
+          </h3>
           {#each expenses.filter((e: any) => e.category === b.category) as e}
             <div
               class="flex justify-between items-center bg-gray-100 p-2 rounded mb-1"
