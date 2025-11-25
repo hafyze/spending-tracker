@@ -224,10 +224,10 @@
         <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
           <div
             class={`h-2 rounded-full transition-all ${
-                  totalSpent(b.category) > b.monthly_limit ? 'bg-red-500' : 'bg-green-500'
-                }`}
+              totalSpent(b.category) > b.monthly_limit? "bg-red-500" : "bg-green-500" }`
+              }
             style="width: {Math.max(
-              ((b.monhtly_limit - totalSpent(b.category)) / b.monthly_limit) * 100,
+               ((b.monthly_limit - totalSpent(b.category)) / b.monthly_limit) * 100,
               0
             )}%"
           ></div>
