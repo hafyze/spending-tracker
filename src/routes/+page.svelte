@@ -80,7 +80,7 @@
     await fetch("/api/budget", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ _id: id }),
+      body: JSON.stringify({ _id: id, category: category }),
     });
     location.reload()
     loading = false;
