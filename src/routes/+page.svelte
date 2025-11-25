@@ -60,12 +60,7 @@
 
   //  Delete an expense
   async function deleteExpense(e: any) {
-    if (
-      !confirm(
-        `Are you sure you want to delete this expense of RM ${e.amount}?`
-      )
-    )
-      return;
+    if (!confirm(`Are you sure you want to delete this expense of RM ${e.amount}?`))  return;
     loading = true;
     await fetch("/api/expense", {
       method: "DELETE",
@@ -92,12 +87,7 @@
   }
 
   async function resetExpensesCategory(category: string) {
-    if (
-      !confirm(
-        "Are you sure you want to delete ALL expenses? This cannot be undone."
-      )
-    )
-      return;
+    if (!confirm("Are you sure you want to delete ALL expenses? This cannot be undone."))  return;
 
     loading = true;
     try {
@@ -316,3 +306,9 @@
     {/each}
   </div>
 </div>
+
+{#if loading}
+  <div class="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
+    <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+  </div>
+{/if}
